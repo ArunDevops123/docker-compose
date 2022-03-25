@@ -1,0 +1,48 @@
+---
+- hosts: all
+  become: true
+  tasks:
+
+    - name: Install python 3.8 ubuntu16
+      shell: sudo apt install build-essential checkinstall -y && sudo apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev libffi-dev zlib1g-dev -y
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+    - name: Install python 3.8 ubuntu16
+      shell: cd /opt/ && sudo wget https://www.python.org/ftp/python/3.8.3/Python-3.8.3.tgz && sudo tar xzf Python-3.8.3.tgz && cd Python-3.8.3 && sudo ./configure --enable-optimizations && sudo make altinstall
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+
+    - name: Install python 3.8 ubuntu18 && ubuntu20
+      shell: apt update
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install python 3.8 ubuntu18 && ubuntu20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - software-properties-common
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"  or ansible_distribution_version == "20.04"
+    - name: Install python 3.8 ubuntu18 && ubuntu20
+      shell: echo -ne '\n' | add-apt-repository ppa:deadsnakes/ppa
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04"  or ansible_distribution_version == "20.04"
+
+    - name: Install python 3.8 ubuntu18 && ubuntu20
+      apt:
+        name: python3.8
+        state: present
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"  or ansible_distribution_version == "20.04"
+
+    - name: Install python 3.8 centos7 && centos8
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - wget
+        - make
+        - gcc
+        - openssl-devel
+        - bzip2-devel
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install python 3.8 centos7 && centos
+      shell: cd /opt/ && wget https://www.python.org/ftp/python/3.8.7/Python-3.8.7.tgz && tar xzf Python-3.8.7.tgz && cd Python-3.8.7 && ./configure --enable-optimizations && sudo make altinstall && sudo ln -sfn /usr/local/bin/python3.8 /usr/bin/python3.8 && sudo ln -sfn /usr/local/bin/pip3.8 /usr/bin/pip3.8
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"

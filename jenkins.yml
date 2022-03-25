@@ -1,0 +1,116 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Jenkins Ubuntu 18 & 20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - openjdk-8-jdk
+        - wget
+        - gnupg2
+        - ca-certificates
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Jenkins Ubuntu 18 & 20
+      shell: wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key > jenkins.io.key
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Jenkins Ubuntu 18 & 20
+      shell: apt-key add jenkins.io.key && rm -rf jenkins.io.key
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Jenkins Ubuntu 18 & 20
+      shell: sh -c 'echo deb https://pkg.jenkins.io/debian-stable binary/' >> /etc/apt/sources.list.d/jenkins.list
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"  
+
+    - name: Jenkins Ubuntu 18 & 20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - 'jenkins=2.319.1'
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Start-Jenkins
+      service:
+        name: jenkins
+        state: restarted
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Jenkins Ubuntu 16
+      shell: wget -q -O - https://jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+
+    - name: Jenkins Ubuntu 16
+      shell: sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+
+    - name: Jenkins Update Ubuntu 16
+      apt:
+        update_cache: yes
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+
+    - name: Jenkins Ubuntu 16
+      apt:
+        name: jenkins
+        state: present
+        force: yes
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04"
+
+    - name: Start-Jenkins Ubuntu 16
+      service:
+        name: jenkins
+        state: restarted
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "16.04"
+
+    - name: Jenkins centos 7 & 8
+      yum:
+        name: "{{ item }}"
+        state: present
+        update_cache: yes
+      loop:
+        - java-1.8.0-openjdk.x86_64
+        - wget
+        - epel-release
+        - curl
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      yum:
+        name: daemonize
+        state: present
+        update_cache: yes
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk && export JRE_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: wget https://get.jenkins.io/redhat-stable/jenkins-2.319.1-1.1.noarch.rpm
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: sudo rpm -iv /root/jenkins-2.319.1-1.1.noarch.rpm
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: curl -uadmin:Zippyops@123 -O "https://jfrog.zippyops.com:443/artifactory/sharedvm-docker-compose/jenkins.service"
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Download jenkins.service
+      shell: curl -uadmin:Zippyops@123 -O "https://jfrog.zippyops.com:443/artifactory/sharedvm-docker-compose/jenkins.service"
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: sudo mv jenkins.service  /etc/systemd/system/ && sudo systemctl enable jenkins.service &&  systemctl daemon-reload
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Jenkins centos 7 & 8
+      shell: systemctl start jenkins.service
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"

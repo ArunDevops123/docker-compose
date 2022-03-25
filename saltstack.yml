@@ -1,0 +1,107 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Install saltstack 3004
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+
+    - name: Install saltstack 3004 
+      shell: sudo curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest/salt-archive-keyring.gpg
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+
+    - name: Install saltstack 3004 
+      shell: echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg arch=amd64] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main" | sudo tee /etc/apt/sources.list.d/salt.list
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "20.04"
+
+    - name: Install saltstack 3004 
+      shell: apt-get update
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+
+    - name: Install saltstack 3004 
+      apt:
+        name: "{{ item }}"
+        state: present 
+      loop:
+        - 'salt-master'                  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "20.04"
+
+
+
+
+    - name: Install saltstack 3004
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+
+    - name: Install saltstack 3004 
+      shell: sudo curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproject.io/py3/ubuntu/18.04/amd64/latest/salt-archive-keyring.gpg
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+
+    - name: Install saltstack 3004 
+      shell: echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg arch=amd64] https://repo.saltproject.io/py3/ubuntu/18.04/amd64/latest bionic main" | sudo tee /etc/apt/sources.list.d/salt.list
+      when: ansible_os_family == "Debian" and  ansible_distribution_version == "18.04"
+
+    - name: Install saltstack 3004 
+      shell: apt-get update
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+
+    - name: Install saltstack 3004 
+      apt:
+        name: "{{ item }}"
+        state: present 
+      loop:
+        - 'salt-master'                  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "18.04"
+
+    - name: Install saltstack 3004 1
+      shell: yum install -y https://repo.saltstack.com/py3/redhat/salt-py3-repo-latest.el7.noarch.rpm
+      ignore_errors: true
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7"      
+
+    - name: Install saltstack 3004
+      shell: yum clean expire-cache
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" 
+    - name: Install saltstack 3004
+      shell: yum update  -y
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7"
+
+    - name: Install saltstack 3004
+      shell: yum install -y salt-master-3004-1.el7
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" 
+
+    - name: Install saltstack 3004
+      shell: systemctl enable --now salt-master
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7"
+
+
+
+    - name: Install saltstack 3004 1
+      shell: dnf install https://repo.saltstack.com/py3/redhat/salt-py3-repo-latest.el8.noarch.rpm -y
+      ignore_errors: true
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8"      
+
+    - name: Install saltstack 3004
+      shell: dnf makecache
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8" 
+    - name: Install saltstack 3004
+      shell: yum update  -y
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8"
+
+    - name: Install saltstack 3004
+      shell: dnf install salt-master-3004 -y
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8" 
+
+    - name: Install saltstack 3004
+      shell: systemctl enable --now salt-master
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8"

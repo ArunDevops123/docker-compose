@@ -1,0 +1,46 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Support package For Ubuntu 16 & 18 & 20
+      apt:
+        name: software-properties-common
+        state: present
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Add the repo For Ubuntu 16 & 18 & 20
+      shell: echo -ne '\n' | apt-add-repository ppa:ansible/ansible
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Update For Ubuntu 16 & 18 & 20
+      shell: sudo apt update -y
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Ansible 2.9 For Ubuntu 16 & 18 & 20
+      apt:
+        name: "{{ item }}" 
+        state: present
+      loop:
+        - "ansible=2.9.*"
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Ansible 2.9  For centos 8
+      dnf:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - epel-release
+        - ansible-2.9.27
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "8"
+
+    - name: Install Ansible 2.9  For centos 7
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - epel-release
+        - ansible
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7"

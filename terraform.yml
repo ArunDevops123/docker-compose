@@ -1,0 +1,32 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Install unzip
+      apt:
+        name: unzip
+        state: present
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Terraform 1.0.11 Installation on ubuntu 16 & 18 & 20
+      unarchive:
+        src:  https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install unzip
+      yum:
+        name: unzip
+        state: present
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Terraform 1.0.11 Installation on centos 7 & 8
+      unarchive:
+        src:  https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+        dest: /usr/bin
+        remote_src: yes
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"

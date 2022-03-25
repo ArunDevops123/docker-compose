@@ -1,0 +1,67 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Install RUBY 2.7 ubuntu18 && ubuntu16 && ubuntu20
+      apt:
+        name: software-properties-common
+        state: present
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+    - name: Install RUBY 2.7 ubuntu18 && ubuntu16 && ubuntu20
+      shell: echo -ne '\n' | apt-add-repository ppa:brightbox/ruby-ng
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+    - name: Install RUBY 2.7 ubuntu18 && ubuntu16 && ubuntu20
+      shell: sudo apt update -y && apt install ruby2.7 -y
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install RUBY 2.7 centos7 && centos8 -1
+      yum:
+        name: which
+        state: present
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install RUBY 2.7 centos7 && centos8 -3
+      shell: curl -sSL https://get.rvm.io | bash
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install RUBY 2.7 centos7 && centos8 -4
+      shell: source /etc/profile.d/rvm.sh
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+
+    - name: Install RUBY 2.7 centos7 && centos8 -4
+      shell: rvm requirements
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Create a new file with permissions
+      file:
+        path: "/home/test/ruby.sh"
+        state: touch
+        mode: 0755
+        owner: root
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Line adding
+      lineinfile:
+        dest: /home/test/ruby.sh
+        line: "rvm install ruby 2.7.5"
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Line adding
+      lineinfile:
+        dest: /home/test/ruby.sh
+        line: "sleep 5"
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Line adding
+      lineinfile:
+        dest: /home/test/ruby.sh
+        line: "rvm use 2.7.5 --default"
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install RUBY 2.7 centos7 && centos8
+      shell: sh /home/test/ruby.sh
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"

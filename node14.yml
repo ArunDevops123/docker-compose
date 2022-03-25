@@ -1,0 +1,64 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Install node 14
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install node 14 
+      shell: curl -sL https://deb.nodesource.com/setup_14.x -o nodesource_setup.sh
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install node 14 
+      shell: bash nodesource_setup.sh && rm -rf nodesource_setup.sh
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install node 14 
+      apt:
+        name: "{{ item }}"
+        state: present 
+      loop:
+        - nodejs                  
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install node 14 
+      shell: npm install -y npm@8.2.0 --global
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"      
+            
+    - name: Install node 14
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - curl
+        - gcc-c++
+        - make  
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install node 14
+      shell: curl -sL https://rpm.nodesource.com/setup_14.x -o nodesource_setup.sh
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"      
+
+    - name: Install node 14
+      shell: bash nodesource_setup.sh && rm -rf nodesource_setup.sh
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"   
+
+    - name: Install node 14
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - nodejs-14.18.2
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install node 14
+      shell: npm install -y npm@8.2.0 --global
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"   

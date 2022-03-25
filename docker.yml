@@ -1,0 +1,61 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Install Docker 20.10.12  Ubuntu 16 & 18 & 20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - software-properties-common
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg2
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Docker 20.10.12 Ubuntu 16 & 18 & 20
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg > docker.io.key
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Docker 20.10.12 Ubuntu 16 & 18 & 20
+      shell: apt-key add docker.io.key  && rm -rf docker.io.key
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Docker 20.10.12 Ubuntu 16 & 18 & 20
+      shell: apt-get update -y && add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Docker 20.10.12 Ubuntu 16 & 18 & 20
+      shell: apt update -y && apt install -y docker-ce=5:20.10.12~3-0~ubuntu-focal && service docker start
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+
+    - name: Install Docker 20.10.12 Centos 7 & 8
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - yum-utils
+        - device-mapper-persistent-data
+        - lvm2
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install Docker 20.10.12 Centos 7 & 8
+      shell:  yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install Docker 20.10.12 Centos 7 & 8
+      yum:
+        name: docker-ce-20.10.12
+        state: present
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Start-Docker 20.10.12 Centos 7 & 8
+      service:
+        name: docker
+        state: restarted
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"

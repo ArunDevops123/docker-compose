@@ -1,0 +1,78 @@
+---
+- hosts: all
+  become: yes
+  become_exe: "sudo su -"
+  become_method: su
+  tasks:
+
+    - name: Rundeck Ubuntu 16 & 18 & 20
+      apt:
+        name: software-properties-common
+        state: present
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Repo add
+      shell: echo -ne '\n' |  sudo add-apt-repository ppa:openjdk-r/ppa
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: update
+      shell: sudo apt-get update -y
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Rundeck Ubuntu 16 & 18 & 20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - openjdk-11-jre-headless
+        - curl
+        - gnupg2
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Rundeck Ubuntu 16 & 18 & 20
+      shell: curl https://raw.githubusercontent.com/rundeck/packaging/main/scripts/deb-setup.sh 2> /dev/null | sudo bash -s rundeck
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Rundeck Ubuntu 16 & 18 & 20
+      apt:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - 'rundeck=3.4.8.20211214-1'
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Start-Rundeck
+      shell: service rundeckd start
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Rundeck Ubuntu 16 & 18 & 20
+      shell: sed -i "s/localhost/rundeck.server.com/g" /etc/rundeck/rundeck-config.properties && sed -i "s/localhost/rundeck.server.com/g" /etc/rundeck/framework.properties && sed -i "s/admin:admin/admin:zippyops/g" /etc/rundeck/realm.properties
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Restart-Rundeck
+      shell: service rundeckd restart
+      when: ansible_os_family == "Debian" and ansible_distribution_version == "16.04" or ansible_distribution_version == "18.04" or ansible_distribution_version == "20.04"
+
+    - name: Install Rundeck 3.4.8 centos7 && centos8 -1
+      yum:
+        name: java-1.8.0-openjdk-devel
+        state: present
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install Rundeck 3.4.8 centos7 && centos8 -1
+      shell: curl https://raw.githubusercontent.com/rundeck/packaging/main/scripts/rpm-setup.sh 2> /dev/null | bash -s rundeck
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Install Rundeck 3.4.8 centos7 && centos8 -1
+      yum:
+        name: "{{ item }}"
+        state: present
+      loop:
+        - 'rundeck-3.4.8.20211214'
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
+
+    - name: Start-Rundeck
+      service:
+        name: rundeckd
+        state: restarted
+      when: ansible_distribution == "CentOS" and ansible_distribution_major_version  == "7" or ansible_distribution_major_version  == "8"
